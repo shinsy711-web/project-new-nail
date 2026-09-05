@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   publisher: SITE_NAME,
   robots: { index: true, follow: true },
   formatDetection: { telephone: false, date: false, address: false, email: false },
-  icons: { icon: '/favicon.ico', shortcut: '/favicon.ico', apple: '/favicon.ico' },
+  icons: { icon: '/favicon.ico', shortcut: '/favicon.ico', apple: '/apple-icon.png' },
   other: {
     'google-adsense-account': ADSENSE_CLIENT,
     NaverBot: 'all',

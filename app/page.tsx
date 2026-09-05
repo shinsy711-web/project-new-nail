@@ -194,8 +194,106 @@ export default function HomePage() {
       </section>
 
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 1.25rem' }}>
+        {/* ───────── 네일학원이란? (사이트 소개) ───────── */}
+        <section aria-labelledby="about-heading" style={{ margin: '64px 0 72px' }}>
+          <Eyebrow>기초 정보</Eyebrow>
+          <h2 id="about-heading" style={{ fontSize: 25, fontWeight: 900, marginBottom: 10 }}>
+            네일학원이란?
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.8, marginBottom: 28 }}>
+            네일을 처음 알아보는 분들을 위해, 네일학원이 어떤 곳이고 이 사이트가 무엇을 정리해 두었는지
+            먼저 설명드립니다.
+          </p>
+
+          <div className="prose">
+            <p>
+              <strong>네일학원</strong>은 손톱·발톱 케어부터 젤 네일, 인조네일(연장), 네일 아트까지
+              네일 시술 전반의 이론과 실기를 가르치는 교육기관입니다. 가장 핵심적인 목표는
+              한국산업인력공단이 시행하는 국가기술자격 <strong>미용사(네일)</strong> 취득입니다.
+              이 자격이 있어야 미용업 면허를 발급받아 네일샵을 열 수 있고, 취업 공고에서도
+              기본 요건으로 요구됩니다.
+            </p>
+            <p>
+              과정은 목적에 따라 네 갈래로 나뉩니다. 시험 4과제만 집중하는 <strong>자격증반</strong>,
+              여기에 아트와 고객 응대를 더한 <strong>실무·취업반</strong>, 상권 분석과 운영까지 다루는{' '}
+              <strong>창업반</strong>, 셀프 시술이 목적인 <strong>취미반·원데이 클래스</strong>입니다.
+              같은 학원이라도 과정에 따라 기간이 1일에서 8개월까지, 수강료가 3만원에서 400만원까지
+              벌어지기 때문에 <strong>목적을 먼저 정하고 과정을 고르는 순서</strong>가 중요합니다.
+            </p>
+            <p>
+              자격증반 기준 수강료는 수도권 100~160만원, 지방 70~120만원 선이고 여기에 재료비
+              20~60만원이 별도로 듭니다. 다만 <strong>국민내일배움카드(국비지원)</strong>를 활용하면
+              자부담이 0~45만원까지 내려갑니다. 학원을 알아보기 전에 지원 대상인지부터 확인하는 것이
+              전체 비용을 가장 크게 줄이는 방법입니다.
+            </p>
+          </div>
+
+          <div
+            style={{
+              background: 'var(--accent-light)',
+              border: '1px solid var(--border-color)',
+              borderRadius: 20,
+              padding: 'clamp(22px, 4vw, 30px)',
+              marginTop: 8,
+            }}
+          >
+            <h3 style={{ fontSize: 17, fontWeight: 900, marginBottom: 12 }}>
+              이 사이트는 무엇을 하나요?
+            </h3>
+            <div className="prose">
+              <p style={{ marginBottom: 14 }}>
+                네일 진로를 알아볼 때 겪는 문제는 정보가 없는 게 아니라, <strong>흩어져 있고
+                서로 다른 말을 한다</strong>는 것입니다. 학원마다 과정 이름이 다르고, 수강료 기준이
+                다르고, 자격증 정보는 오래된 내용이 그대로 돌아다닙니다.
+              </p>
+              <p style={{ marginBottom: 14 }}>
+                그래서 이 사이트는 그 정보를 <strong>주제 하나당 문서 하나</strong>로 정리했습니다.
+                자격증·수강료·국비지원·지역별 학원·취업·창업까지 여덟 갈래, 총 {TOTAL_PAGE_COUNT}개
+                문서입니다. 시험 일정과 국비 제도는 큐넷·HRD-Net 공식 기준을 따르고, 금액은 지역과
+                학원에 따라 편차가 커서 단일 숫자 대신 시세 범위로 적었습니다.
+              </p>
+              <p style={{ marginBottom: 0 }}>
+                <strong>특정 학원을 추천하지는 않습니다.</strong> 대신 학원을 비교할 때 무엇을 물어야
+                하는지, 어떤 숫자를 확인해야 하는지를 정리했습니다. 조건에 맞는 과정을 직접 골라
+                드리는 무료 상담도 함께 운영합니다.
+              </p>
+            </div>
+            <p style={{ marginTop: 18, display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+              <Link
+                href="/guide"
+                style={{
+                  display: 'inline-block',
+                  background: 'var(--primary-light)',
+                  color: 'var(--primary-dark)',
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  padding: '9px 18px',
+                  borderRadius: 50,
+                }}
+              >
+                등록 전 체크리스트 →
+              </Link>
+              <Link
+                href="/about"
+                style={{
+                  display: 'inline-block',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-secondary)',
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  padding: '9px 18px',
+                  borderRadius: 50,
+                }}
+              >
+                정보를 정리하는 기준 →
+              </Link>
+            </p>
+          </div>
+        </section>
+
         {/* ───────── 주제별 안내 ───────── */}
-        <nav aria-labelledby="topics-heading" style={{ margin: '64px 0 72px' }}>
+        <nav aria-labelledby="topics-heading" style={{ margin: '0 0 72px' }}>
           <Eyebrow>무엇을 찾으시나요</Eyebrow>
           <h2 id="topics-heading" style={{ fontSize: 25, fontWeight: 900, marginBottom: 10 }}>주제별로 정리된 네일학원 정보</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.8, marginBottom: 28 }}>

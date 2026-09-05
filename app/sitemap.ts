@@ -21,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   return [
-    { url: `${SITE_URL}/`, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
+    { url: SITE_URL, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
     ...clusterUrls,
     { url: `${SITE_URL}/guide`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${SITE_URL}/qna`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },

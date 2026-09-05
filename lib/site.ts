@@ -1,5 +1,5 @@
 export const SITE_NAME = '네일학원 종합가이드'
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nailedu.kr'
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nailcost.kr'
 export const OG_IMAGE = `${SITE_URL}/thumb.webp`
 export const LOGO_IMAGE = `${SITE_URL}/logo.png`
 

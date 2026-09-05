@@ -9,7 +9,7 @@
 
 | 항목 | 현재 값 | 해야 할 일 |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | `https://nailedu.kr` (플레이스홀더) | 확정 도메인으로 교체 |
+| `NEXT_PUBLIC_SITE_URL` | `https://nailcost.kr` (확정) | Vercel 환경변수에도 동일하게 등록 |
 | `NEXT_PUBLIC_DB_API_KEY` | `REPLACE_WITH_PROJECT31_KEY` | project31 전용 키 발급 후 교체 |
 | `NEXT_PUBLIC_GA_ID` | 미설정 | GA4 측정 ID 입력 시 스크립트 자동 활성화 |
 | `NEXT_PUBLIC_NAVER_VERIFICATION` | 미설정 | 네이버 서치어드바이저 인증값 입력 시 메타태그 자동 삽입 |
