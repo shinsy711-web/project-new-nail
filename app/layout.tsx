@@ -9,6 +9,7 @@ import {
   HOME_DESC,
   HOME_TITLE,
   LOGO_IMAGE,
+  NAVER_VERIFICATION,
   OG_IMAGE,
   OPERATOR,
   SITE_KEYWORDS,
@@ -21,8 +22,6 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
 // TODO: 배포 후 발급받은 GA4 측정 ID를 넣으면 스크립트가 자동으로 활성화됩니다.
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
-// TODO: 네이버 서치어드바이저 사이트 등록 후 발급받은 값으로 교체
-const NAVER_VERIFICATION = process.env.NEXT_PUBLIC_NAVER_VERIFICATION
 const ADSENSE_CLIENT = 'ca-pub-5378247298190063'
 
 export const metadata: Metadata = {

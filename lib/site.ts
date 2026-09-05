@@ -3,6 +3,13 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nailcost.kr
 export const OG_IMAGE = `${SITE_URL}/thumb.webp`
 export const LOGO_IMAGE = `${SITE_URL}/logo.png`
 
+/**
+ * 네이버 서치어드바이저 사이트 소유확인 값.
+ * 페이지 소스에 그대로 노출되는 공개값이라 코드에 둔다 (환경변수로 덮어쓸 수 있음).
+ */
+export const NAVER_VERIFICATION =
+  process.env.NEXT_PUBLIC_NAVER_VERIFICATION || '3773f4130761ea89f98547c55e77dc7cac6a5296'
+
 /** 사이트 최초 공개일 / 콘텐츠 최종 갱신일 (Article 구조화데이터·본문 표기에 함께 사용) */
 export const PUBLISHED_DATE = '2026-09-05'
 export const UPDATED_DATE = '2026-09-05'
