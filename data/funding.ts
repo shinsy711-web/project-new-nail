@@ -41,7 +41,7 @@ export const funding: Cluster = {
       keyword: '국비지원 네일학원',
       volume: 310,
       h1: '국비지원 네일학원 찾는 방법 — HRD-Net 검색부터 등록까지',
-      title: '국비지원 네일학원 찾기 | HRD-Net 검색법·등록 절차·주의점 2026',
+      title: '국비지원 네일학원 찾기 | HRD-Net 검색법·등록 절차 2026',
       description:
         '국비지원 네일학원을 HRD-Net에서 찾는 방법과 등록 절차, 국비 과정 선택 시 확인해야 할 항목을 정리했습니다. 국비 과정과 일반 과정의 차이까지 확인하세요.',
       lead:
