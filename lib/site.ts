@@ -22,8 +22,7 @@ export const UPDATED_DATE = '2026-09-05'
  */
 export const SOCIAL_PROFILES: string[] = []
 
-export const HOME_TITLE =
-  '네일학원 총정리 2026 | 수강료·국비지원·네일 자격증·취업 비교'
+export const HOME_TITLE = '네일학원 수강료 비교·국비지원·자격증 총정리 2026'
 export const HOME_H1 = '네일학원 수강료·국비지원·자격증 총정리'
 export const HOME_DESC =
   '네일학원 수강료 시세, 국비지원(내일배움카드) 활용법, 네일 자격증 취득 방법, 지역별 학원 비교를 2026년 기준으로 정리했습니다.'
