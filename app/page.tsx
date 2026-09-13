@@ -179,7 +179,7 @@ export default function HomePage() {
           >
             신청 시 개인정보 수집·이용 및 제3자 제공 동의 절차가 진행됩니다.
             <br />
-            제공받는 곳은 특정 한 업체가 아니라 복수의 제휴 상담처입니다.
+            제공받는 곳은 올댓뷰티 상담사입니다.
           </p>
 
           <p style={{ marginTop: 14, fontSize: 13.5 }}>
