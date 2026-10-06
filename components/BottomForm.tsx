@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import PrivacyModal from './PrivacyModal'
-import { parsePhone } from '@/lib/validate'
+import { parsePhone, type ParsedPhone } from '@/lib/validate'
 
 type Status = 'idle' | 'sending' | 'done' | 'error'
 
@@ -44,19 +44,21 @@ export default function BottomForm() {
     }
   }, [])
 
-  const send = useCallback(async () => {
+  /**
+   * 입력값을 기존 FormSection 과 똑같은 parsePhone 규칙으로 검증·분해한다.
+   * (국번 없는 8자리 또는 국번 포함 11자리만 통과)
+   * 자체 정규식으로 10자리까지 받으면 mobile2 가 7자리인 없는 번호가
+   * 그대로 수집 서버에 저장되므로, 판정은 반드시 parsePhone 에 맡긴다.
+   */
+  const resolvePhone = useCallback((): ParsedPhone | string => {
     const digits = phone.replace(/\D/g, '')
-    if (!/^01\d{8,9}$/.test(digits)) {
-      setStatus('error')
-      setMessage('휴대폰 번호를 다시 입력해 주세요.')
-      return
-    }
+    if (!digits) return '휴대폰 번호를 입력해 주세요.'
+    const parsed = parsePhone('010', digits)
+    return typeof parsed === 'string' ? '휴대폰 번호를 다시 입력해 주세요.' : parsed
+  }, [phone])
 
-    // 11자리는 기존 폼과 같은 parsePhone 규칙으로 국번/번호를 쪼갠다.
-    const parsed =
-      digits.length === 11
-        ? parsePhone(digits.slice(0, 3), digits)
-        : { mobile1: digits.slice(0, 3), mobile2: digits.slice(3) }
+  const send = useCallback(async () => {
+    const parsed = resolvePhone()
     if (typeof parsed === 'string') {
       setStatus('error')
       setMessage(parsed)
@@ -99,16 +101,16 @@ export default function BottomForm() {
       setStatus('error')
       setMessage('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
     }
-  }, [phone])
+  }, [resolvePhone])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (status === 'sending') return
 
-    const digits = phone.replace(/\D/g, '')
-    if (!/^01\d{8,9}$/.test(digits)) {
+    const parsed = resolvePhone()
+    if (typeof parsed === 'string') {
       setStatus('error')
-      setMessage('휴대폰 번호를 다시 입력해 주세요.')
+      setMessage(parsed)
       return
     }
     if (!agreed) {
