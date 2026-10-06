@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { THIRD_PARTY_RECIPIENT } from "@/lib/site"
+import { DATA_COLLECTOR, THIRD_PARTY_RECIPIENT } from "@/lib/site"
 
 export default function PrivacyPolicyModal() {
   const [open, setOpen] = useState(false)
@@ -19,13 +19,13 @@ export default function PrivacyPolicyModal() {
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.7)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
           <div style={{ backgroundColor: "#fff", borderRadius: "1rem", width: "100%", maxWidth: "680px", maxHeight: "85dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.25rem 1.5rem", borderBottom: "1px solid #e5e7eb" }}>
-              <h2 style={{ margin: 0, fontSize: "1.125rem", fontWeight: 700 }}>주식회사 와야미디어 개인정보 처리방침</h2>
+              <h2 style={{ margin: 0, fontSize: "1.125rem", fontWeight: 700 }}>{DATA_COLLECTOR} 개인정보 처리방침</h2>
               <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.25rem", color: "#6b7280", lineHeight: 1 }}>✕</button>
             </div>
 
             <div style={{ overflowY: "auto", padding: "1.5rem", fontSize: "0.875rem", lineHeight: 1.8, color: "#374151" }}>
               <p style={{ marginBottom: "1.5rem" }}>
-                주식회사 와야미디어(이하 &apos;회사&apos;)는 정보주체의 동의를 기반으로 개인정보를 수집·이용 및 제공하고 있으며, 정보주체의 개인정보자기결정권을 적극적으로 보장하고 개인정보와 관련한 고충을 원활하게 처리할 수 있도록 다음과 같은 개인정보처리방침을 수립·공개합니다.<br /><br />
+                {DATA_COLLECTOR}(이하 &apos;회사&apos;)는 정보주체의 동의를 기반으로 개인정보를 수집·이용 및 제공하고 있으며, 정보주체의 개인정보자기결정권을 적극적으로 보장하고 개인정보와 관련한 고충을 원활하게 처리할 수 있도록 다음과 같은 개인정보처리방침을 수립·공개합니다.<br /><br />
                 본 개인정보처리방침은 &apos;네일학원 상담 안내&apos; 서비스에 적용됩니다.
               </p>
 

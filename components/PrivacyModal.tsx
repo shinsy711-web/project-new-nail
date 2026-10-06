@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { THIRD_PARTY_RECIPIENT } from "@/lib/site"
+import { DATA_COLLECTOR, THIRD_PARTY_RECIPIENT } from "@/lib/site"
 
 type Props = {
   onConfirm: () => void
@@ -70,7 +70,7 @@ export default function PrivacyModal({ onConfirm, onClose }: Props) {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <ContentBox checked={priAgree} onChange={setPriAgree} label="개인정보 수집 및 이용 동의" primary={primary}>
-                수집 주체 : (주)와야미디어<br />
+                수집 주체 : <b>{DATA_COLLECTOR}</b><br />
                 수집 목적 : 네일학원 수강료·국비지원·자격증 과정 관련 상담 및 문의 응대<br />
                 수집 항목 : 성명, 휴대폰 번호, 생년월일, 성별, 희망 지역, 미용사(네일) 자격증 보유 여부<br />
                 보유 기간 : 수집일로부터 1년 (또는 요청 시 즉시 파기)<br />

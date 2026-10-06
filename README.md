@@ -74,6 +74,37 @@ components/Article.tsx           Sections/DataTable/Callout/FaqBlock/RelatedLink
 - 스타일은 `app/globals.css`의 `.bottom-bar*` 규칙. z-index 60 (Header 50 위 / 모달 999·9999 아래)
 - 바 높이만큼 `body { padding-bottom }`을 주고, 마운트 후 실제 높이로 다시 맞춥니다(ResizeObserver)
 
+### 수집 주체 고지 — 주식회사 와야미디어
+
+개인정보를 **수집·이용하는 자(수집 주체)** 는 **주식회사 와야미디어**로 고지합니다.
+값은 **`lib/site.ts`의 `DATA_COLLECTOR` 상수 한 곳**에서만 관리합니다
+(`OPERATOR.name` 도 같은 법인이라 이 상수를 참조합니다).
+
+| 위치 | 파일 |
+|---|---|
+| 단일 소스 상수 | `lib/site.ts` (`DATA_COLLECTOR`) |
+| 상담 신청 동의 모달 — 수집·이용 동의의 "수집 주체" | `components/PrivacyModal.tsx` |
+| 개인정보처리방침 제목 · 총칙 | `components/PrivacyPolicyModal.tsx` |
+| 필수안내사항 (수집 주체 고지 + 운영 업체 안내) | `components/LegalNoticeModal.tsx` |
+| 푸터 운영 정보 · 사이트 소개 · 문의하기 (`OPERATOR.name`) | `components/Footer.tsx` · `app/about/page.tsx` · `app/contact/page.tsx` |
+
+> **수집 주체 ≠ 제3자 제공받는 자.** 수집 주체는 `DATA_COLLECTOR`(와야미디어),
+> 제3자 제공받는 자는 `THIRD_PARTY_RECIPIENT`(올댓뷰티 상담사)로 서로 다른 항목입니다.
+> 동의 모달에서 전자는 "개인정보 수집 및 이용 동의", 후자는 "개인정보 제3자 제공 동의" 박스에 나옵니다.
+
+> 이전에는 동의 모달에만 `(주)와야미디어` 약칭이 하드코딩돼 처리방침 표기(`주식회사 와야미디어`)와
+> 갈렸습니다. 2026-10-06 상수화하면서 처리방침 표기에 맞췄습니다.
+
+### 광고성 정보 수신 동의 — 이 사이트에는 없음
+
+이 사이트의 동의 항목은 **개인정보 수집·이용 동의 + 제3자 제공 동의 2개(둘 다 필수)** 뿐이고,
+광고성 정보 수신(마케팅 수신) 동의 체크박스는 처음부터 만들지 않았습니다.
+전송 payload(`lib/leadForm.ts` → `buildPayload`)에도 해당 필드가 없습니다.
+새로 넣을 일이 생기면 `PrivacyModal`·`BottomForm` 양쪽과 `buildPayload` 를 함께 고쳐야 합니다.
+
+> 처리방침 제1조 ②-다) "신규 서비스 개발, 이벤트 및 마케팅 정보 전달"은 **처리 목적 설명**이라
+> 동의 UI 와 별개 항목이며 그대로 둡니다.
+
 ### 제3자 제공 고지 — 올댓뷰티 상담사
 
 제공받는 자는 **올댓뷰티 상담사**로 고지합니다. (2026-09-13 사용자 지시로 변경 — 이전에는 "복수 제휴 상담처" 유형으로 고지했다.)

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { THIRD_PARTY_RECIPIENT } from "@/lib/site"
+import { DATA_COLLECTOR, THIRD_PARTY_RECIPIENT } from "@/lib/site"
 
 export default function LegalNoticeModal() {
   const [open, setOpen] = useState(false)
@@ -29,7 +29,8 @@ export default function LegalNoticeModal() {
               <p>※ 상담 신청 시 동의하신 개인정보는 <b>{THIRD_PARTY_RECIPIENT}</b>에게 제공될 수 있습니다.</p><br />
               <p>※ 이용자는 개인정보 제공에 대한 동의를 거부할 권리가 있으며, 거부 시 상담 서비스 이용이 제한될 수 있습니다.</p><br />
               <p>※ 본 사이트를 통한 학원 상담은 특정 결과를 보장하지 않으며, 최종 수강 결정은 이용자 본인의 판단에 따릅니다.</p><br />
-              <p>※ 주식회사 와야미디어는 네일학원 정보 제공 및 상담 연결 서비스를 운영하는 업체입니다.</p>
+              <p>※ 상담 신청 시 입력하신 개인정보를 수집·이용하는 자(수집 주체)는 <b>{DATA_COLLECTOR}</b>입니다.</p><br />
+              <p>※ {DATA_COLLECTOR}는 네일학원 정보 제공 및 상담 연결 서비스를 운영하는 업체입니다.</p>
             </div>
 
             <div style={{ padding: "1rem 1.5rem", borderTop: "1px solid #e5e7eb" }}>
