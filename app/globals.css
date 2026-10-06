@@ -121,14 +121,15 @@ h1, h2, h3, h4 { letter-spacing: -0.025em; }
 
 /* ──────────────────────────────────────────────
    하단 고정 상담 바 (components/BottomForm.tsx)
-   색·폰트·버튼 모양은 기존 폼(FormSection)과 동일한 토큰을 쓴다.
+   본문 폼(FormSection)이 받는 항목 전부를 처음부터 펼쳐 보여준다.
+   색·폰트·버튼 모양은 기존 폼과 동일한 토큰만 쓴다(새 색 없음).
    z-index 60 : Header(sticky 50) 위, 스킵링크(100)·동의 모달(999)·
    처리방침/필수안내 모달(9999) 아래 — 모달을 덮지 않는다.
    ────────────────────────────────────────────── */
 
-/* 하이드레이션 전 기본 여백. 마운트 후에는 BottomForm 이 실제 바 높이로 덮어쓴다. */
+/* 하이드레이션 전 기본 여백(대략값). 마운트 후에는 BottomForm 이 실측 높이로 덮어쓴다. */
 body {
-  padding-bottom: 124px;
+  padding-bottom: 316px;
 }
 
 .bottom-bar {
@@ -150,8 +151,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
+/* ── 동의 ── */
 .bottom-bar-consent {
   display: flex;
   align-items: center;
@@ -195,20 +198,54 @@ body {
   flex-shrink: 0;
 }
 
-.bottom-bar-fields {
-  display: flex;
-  gap: 8px;
-  align-items: stretch;
+/* ── 입력칸 격자 ──
+   모바일(기본) : 2열. 연락처만 한 줄 전체.
+     1행 성함 | 생년월일 / 2행 성별 | 자격증 / 3행 연락처 / 4행 지역 | 제출
+   PC(≥880px)  : 7열 한 줄로 펴서 바 높이를 줄인다. */
+.bottom-bar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+  align-items: end;
   min-width: 0;
 }
 
-.bottom-bar-phone {
-  flex: 1 1 auto;
+.bottom-bar-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   min-width: 0;
+}
+
+.bottom-bar-cell-phone {
+  grid-column: 1 / -1;
+}
+
+.bottom-bar-cell-submit {
+  justify-content: flex-end;
+}
+
+.bottom-bar-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  padding-left: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bottom-bar-input {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  padding: 0 10px;
   background: var(--bg-card);
   border: 1.5px solid var(--border-color);
-  border-radius: 14px;
-  padding: 11px 16px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 500;
   font-family: inherit;
@@ -216,27 +253,81 @@ body {
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.bottom-bar-phone::placeholder {
+.bottom-bar-input::placeholder {
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13px;
 }
-.bottom-bar-phone:focus {
+.bottom-bar-input:focus {
   border-color: var(--primary);
   box-shadow: 0 4px 20px rgba(214, 51, 108, 0.12);
 }
 
+.bottom-bar-select {
+  cursor: pointer;
+  padding-right: 4px;
+}
+.bottom-bar-select[data-empty='true'] {
+  color: var(--text-muted);
+}
+
+.bottom-bar-phone-row {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+}
+.bottom-bar-prefix {
+  flex: 0 0 74px;
+  width: 74px;
+}
+
+/* ── 성별 · 자격증 보유 (라디오 2지선다) ── */
+.bottom-bar-seg {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+}
+.bottom-bar-seg-item {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bottom-bar-seg label {
+  flex: 1 1 auto;
+  min-width: 42px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--accent-light);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.bottom-bar-seg input:checked + label {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* ── 제출 ── */
 .bottom-bar-submit {
-  flex: 0 0 auto;
-  width: 108px;
-  padding: 11px 10px;
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  padding: 0 8px;
   background: var(--primary);
   color: #fff;
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   font-size: 15px;
   font-weight: 900;
   font-family: inherit;
   letter-spacing: -0.02em;
+  white-space: nowrap;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(214, 51, 108, 0.24);
   transition: opacity 0.2s ease;
@@ -246,8 +337,8 @@ body {
   cursor: not-allowed;
 }
 
+/* ── 상태 문구 (aria-live) ── */
 .bottom-bar-status {
-  flex: 0 0 auto;
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
@@ -263,33 +354,33 @@ body {
   color: var(--primary);
 }
 
-/* PC: 한 줄 배치 + 가운데 정렬(최대 1180px) */
+/* PC: 모든 입력칸을 가로 한 줄로 (최대 1180px 가운데 정렬) */
 @media (min-width: 880px) {
   body {
-    padding-bottom: 76px;
+    padding-bottom: 106px;
   }
   .bottom-bar {
-    padding: 12px 1.25rem;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  }
-  .bottom-bar-inner {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 20px;
-  }
-  .bottom-bar-consent {
-    flex: 1 1 auto;
+    padding: 10px 1.25rem;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   }
   .bottom-bar-consent-label {
     font-size: 13px;
   }
-  .bottom-bar-fields {
-    flex: 0 0 auto;
-    width: 400px;
+  .bottom-bar-detail {
+    font-size: 13px;
   }
-  .bottom-bar-status {
-    flex: 1 1 100%;
-    text-align: right;
+  .bottom-bar-grid {
+    grid-template-columns:
+      minmax(0, 1.15fr)  /* 성함 */
+      minmax(0, 1.15fr)  /* 생년월일 */
+      auto               /* 성별 */
+      auto               /* 자격증 보유 */
+      minmax(0, 2fr)     /* 연락처 */
+      minmax(0, 1.1fr)   /* 희망 지역 */
+      minmax(0, 1.5fr);  /* 제출 */
+    gap: 10px;
+  }
+  .bottom-bar-cell-phone {
+    grid-column: auto;
   }
 }

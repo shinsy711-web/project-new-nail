@@ -3,6 +3,15 @@
 import { useId, useState } from "react"
 import PrivacyModal from "./PrivacyModal"
 import { validateForm, parsePhone } from "@/lib/validate"
+import {
+  INITIAL_FORM,
+  LICENSE_OPTIONS,
+  MOBILE_PREFIXES,
+  REGIONS,
+  SEX_OPTIONS,
+  buildPayload,
+  submitUrl,
+} from "@/lib/leadForm"
 
 type Props = {
   /** 폼 상단 문구. 페이지별 타겟 키워드를 넣어 문맥을 맞춘다. */
@@ -25,15 +34,7 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
     license: `${uid}-license`,
   }
 
-  const [form, setForm] = useState({
-    customer_name: "",
-    customer_birth: "",
-    mobile1: "010",
-    mobile2: "",
-    customer_sex: "2",
-    region: "",
-    has_license: "N",
-  })
+  const [form, setForm] = useState({ ...INITIAL_FORM })
   const [showModal, setShowModal] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [focusedField, setFocusedField] = useState<string | null>(null)
@@ -62,23 +63,11 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
     const phoneResult = parsePhone(form.mobile1, form.mobile2)
     if (typeof phoneResult === "string") { alert(phoneResult); return }
 
-    const payload = {
-      customer_name: form.customer_name,
-      customer_birth: form.customer_birth,
-      mobile1: phoneResult.mobile1,
-      mobile2: phoneResult.mobile2,
-      mobile3: "",
-      customer_sex: form.customer_sex,
-      region: form.region,
-      has_license: form.has_license,
-      category: "네일",
-    }
+    const payload = buildPayload(form, phoneResult)
 
     setSubmitted(true)
     try {
-      const url = process.env.NEXT_PUBLIC_DB_SUBMIT_URL!
-      const key = process.env.NEXT_PUBLIC_DB_API_KEY!
-      const res = await fetch(`${url}?api_key=${key}`, {
+      const res = await fetch(submitUrl(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -90,7 +79,7 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
         return
       }
       alert("상담 신청이 완료되었습니다. 담당자가 곧 연락드리겠습니다.")
-      setForm({ customer_name: "", customer_birth: "", mobile1: "010", mobile2: "", customer_sex: "2", region: "", has_license: "N" })
+      setForm({ ...INITIAL_FORM })
     } catch {
       alert("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.")
     }
@@ -198,7 +187,7 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
                   }}
                 >
                   <legend className="sr-only">성별</legend>
-                  {[{ label: '남', val: '1' }, { label: '여', val: '2' }].map(({ label, val }) => (
+                  {SEX_OPTIONS.map(({ label, value: val }) => (
                     <span key={val} style={{ display: 'inline-flex' }}>
                       <input
                         className="sr-only"
@@ -265,7 +254,7 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
                     onBlur={() => setFocusedField(null)}
                     style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}
                   >
-                    {["010", "011", "016", "017", "019"].map((v) => <option key={v} value={v}>{v}</option>)}
+                    {MOBILE_PREFIXES.map((v) => <option key={v} value={v}>{v}</option>)}
                   </select>
                   <span aria-hidden="true" style={{ position: 'absolute', right: '10px', pointerEvents: 'none', color: 'var(--text-muted)', fontSize: '10px' }}>▼</span>
                 </div>
@@ -303,7 +292,7 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
                   style={{ ...inputStyle, appearance: 'none', cursor: 'pointer', color: form.region ? 'var(--text-primary)' : 'var(--text-muted)' }}
                 >
                   <option value="" disabled hidden>지역 선택</option>
-                  {["서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"].map((r) => (
+                  {REGIONS.map((r) => (
                     <option key={r} value={r}>{r}</option>
                   ))}
                 </select>
@@ -322,7 +311,7 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
               <button
                 type="button"
                 role="switch"
-                aria-checked={form.has_license === "Y"}
+                aria-checked={form.has_license === LICENSE_OPTIONS[0].value}
                 aria-labelledby={id.license}
                 onClick={() => set("has_license", form.has_license === "Y" ? "N" : "Y")}
                 onFocus={() => setFocusedField('license')}
@@ -334,7 +323,7 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
                   color: form.has_license === "Y" ? 'var(--primary)' : 'var(--text-muted)',
                   transition: 'color 0.2s',
                 }}>
-                  {form.has_license === "Y" ? "보유" : "없음"}
+                  {form.has_license === LICENSE_OPTIONS[0].value ? LICENSE_OPTIONS[0].label : LICENSE_OPTIONS[1].label}
                 </span>
                 <span aria-hidden="true" style={{
                   position: 'relative', display: 'block', width: '44px', height: '24px', borderRadius: '12px',

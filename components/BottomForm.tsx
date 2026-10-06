@@ -1,35 +1,74 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import PrivacyModal from './PrivacyModal'
-import { parsePhone, type ParsedPhone } from '@/lib/validate'
+import { parsePhone, validateForm, type ParsedPhone } from '@/lib/validate'
+import {
+  INITIAL_FORM,
+  LICENSE_OPTIONS,
+  MOBILE_PREFIXES,
+  REGIONS,
+  SEX_OPTIONS,
+  buildPayload,
+  submitUrl,
+  type LeadForm,
+} from '@/lib/leadForm'
 
 type Status = 'idle' | 'sending' | 'done' | 'error'
 
 /**
  * 화면 하단 고정 상담 바.
  *  - app/layout.tsx 에서 전역 마운트 → 모든 페이지(모바일·PC)에 노출된다.
- *  - 전송 경로는 components/FormSection.tsx 와 동일: 같은 엔드포인트·같은 필드명·같은 환경변수.
- *    번호만 받으므로 이름·생년월일·성별·지역·자격증 항목은 빈 값으로 보낸다.
- *  - 동의 항목은 기존 폼과 같은 2건(개인정보 수집 및 이용 동의 / 개인정보 제3자 제공 동의)이며,
- *    상세 내용은 기존 PrivacyModal 을 그대로 띄워 보여준다(문구를 새로 만들지 않는다).
+ *  - 본문 폼(components/FormSection.tsx)이 받는 항목을 전부, 그 항목만 받는다:
+ *    성함 · 생년월일 · 성별 · 미용사(네일) 자격증 보유 여부 · 연락처(국번+번호) · 희망 지역.
+ *    선택 목록·기본값·payload 는 lib/leadForm.ts 단일 소스에서 가져오므로 본문 폼과
+ *    키·값 규칙이 어긋날 수 없고, 사용자가 입력하지 않은 값을 빈 문자열로 끼워 보내지 않는다.
+ *  - 모든 입력칸은 처음부터 펼쳐져 있다(접었다 펴는 방식 없음).
+ *  - 검증은 본문 폼과 같은 lib/validate 의 validateForm + parsePhone 만 쓴다.
+ *    자체 번호 정규식은 10자리(예: 0101234567) 같은 없는 번호를 통과시키므로 금지.
+ *  - 동의 항목·문구는 기존 바텀폼 그대로이며, 상세 내용은 기존 PrivacyModal 을
+ *    띄워 보여주고 모달에서 동의하면 그대로 전송된다.
  */
 export default function BottomForm() {
-  const [phone, setPhone] = useState('')
+  const uid = useId()
+  const id = {
+    name: `${uid}-name`,
+    birth: `${uid}-birth`,
+    sex: `${uid}-sex`,
+    sexLabel: `${uid}-sex-label`,
+    license: `${uid}-license`,
+    licenseLabel: `${uid}-license-label`,
+    mobile1: `${uid}-mobile1`,
+    mobile2: `${uid}-mobile2`,
+    region: `${uid}-region`,
+    agree: `${uid}-agree`,
+  }
+
+  const [form, setForm] = useState<LeadForm>({ ...INITIAL_FORM })
   const [agreed, setAgreed] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
   const barRef = useRef<HTMLDivElement | null>(null)
 
-  // 바가 본문 마지막 내용을 가리지 않게, 실제 바 높이만큼 body 하단 여백을 준다.
-  // (모바일에서 두 줄로 접히거나 상태 문구가 붙어 높이가 바뀌어도 ResizeObserver 로 따라간다.)
+  const set = (key: keyof LeadForm, value: string) => {
+    setForm((p) => ({ ...p, [key]: value }))
+    if (status === 'error' || status === 'done') {
+      setStatus('idle')
+      setMessage('')
+    }
+  }
+
+  // 바가 본문 마지막 내용(푸터)을 가리지 않게, 실제 바 높이만큼 body 하단 여백을 준다.
+  // 입력칸이 전부 보이는 만큼 바가 높고 모바일/PC·상태 문구에 따라 높이가 바뀌므로
+  // ResizeObserver 로 실측해 따라간다. (globals.css 값은 하이드레이션 전 대략값일 뿐)
   useEffect(() => {
     const bar = barRef.current
     if (!bar) return
 
     const apply = () => {
-      document.body.style.paddingBottom = `${bar.offsetHeight}px`
+      // 소수점 높이(예: 315.4px)가 내림되어 푸터 마지막 1px 이 가려지지 않도록 올림한다.
+      document.body.style.paddingBottom = `${Math.ceil(bar.getBoundingClientRect().height)}px`
     }
     apply()
 
@@ -45,44 +84,33 @@ export default function BottomForm() {
   }, [])
 
   /**
-   * 입력값을 기존 FormSection 과 똑같은 parsePhone 규칙으로 검증·분해한다.
-   * (국번 없는 8자리 또는 국번 포함 11자리만 통과)
-   * 자체 정규식으로 10자리까지 받으면 mobile2 가 7자리인 없는 번호가
-   * 그대로 수집 서버에 저장되므로, 판정은 반드시 parsePhone 에 맡긴다.
+   * 본문 폼과 똑같은 규칙으로 검증한다.
+   *  1) validateForm : 성함(특수문자·길이) · 생년월일 6자리 · 성별 · 번호 숫자/길이
+   *  2) 희망 지역    : 기본 선택값이 없는 항목이라 빈 값으로 보내지 않게 선택을 요구
+   *  3) parsePhone   : 번호 최종 판정(국번 제외 8자리 또는 국번 포함 11자리만 통과)
+   * 통과하면 전송에 쓸 ParsedPhone 을, 실패하면 안내 문구를 돌려준다.
    */
-  const resolvePhone = useCallback((): ParsedPhone | string => {
-    const digits = phone.replace(/\D/g, '')
-    if (!digits) return '휴대폰 번호를 입력해 주세요.'
-    const parsed = parsePhone('010', digits)
-    return typeof parsed === 'string' ? '휴대폰 번호를 다시 입력해 주세요.' : parsed
-  }, [phone])
+  const validate = useCallback((): ParsedPhone | string => {
+    const error = validateForm({ ...form, privacy: true })
+    if (error) return error
+    if (!form.region) return '희망 지역을 선택해 주세요.'
+    return parsePhone(form.mobile1, form.mobile2)
+  }, [form])
 
   const send = useCallback(async () => {
-    const parsed = resolvePhone()
-    if (typeof parsed === 'string') {
+    const phone = validate()
+    if (typeof phone === 'string') {
       setStatus('error')
-      setMessage(parsed)
+      setMessage(phone)
       return
     }
 
-    const payload = {
-      customer_name: '',
-      customer_birth: '',
-      mobile1: parsed.mobile1,
-      mobile2: parsed.mobile2,
-      mobile3: '',
-      customer_sex: '',
-      region: '',
-      has_license: '',
-      category: '네일',
-    }
+    const payload = buildPayload(form, phone)
 
     setStatus('sending')
     setMessage('전송 중...')
     try {
-      const url = process.env.NEXT_PUBLIC_DB_SUBMIT_URL!
-      const key = process.env.NEXT_PUBLIC_DB_API_KEY!
-      const res = await fetch(`${url}?api_key=${key}`, {
+      const res = await fetch(submitUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -95,22 +123,22 @@ export default function BottomForm() {
       }
       setStatus('done')
       setMessage('상담 신청이 완료되었습니다. 담당자가 곧 연락드리겠습니다.')
-      setPhone('')
+      setForm({ ...INITIAL_FORM })
       setAgreed(false)
     } catch {
       setStatus('error')
       setMessage('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
     }
-  }, [resolvePhone])
+  }, [form, validate])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (status === 'sending') return
 
-    const parsed = resolvePhone()
-    if (typeof parsed === 'string') {
+    const phone = validate()
+    if (typeof phone === 'string') {
       setStatus('error')
-      setMessage(parsed)
+      setMessage(phone)
       return
     }
     if (!agreed) {
@@ -134,16 +162,21 @@ export default function BottomForm() {
       )}
 
       <div className="bottom-bar" ref={barRef}>
-        <form className="bottom-bar-inner" onSubmit={handleSubmit} noValidate aria-label="휴대폰 번호로 빠른 상담 신청">
+        <form
+          className="bottom-bar-inner"
+          onSubmit={handleSubmit}
+          noValidate
+          aria-label="네일학원 무료 상담 신청"
+        >
           <div className="bottom-bar-consent">
             <input
-              id="bottom-bar-agree"
+              id={id.agree}
               type="checkbox"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
               className="bottom-bar-check"
             />
-            <label htmlFor="bottom-bar-agree" className="bottom-bar-consent-label">
+            <label htmlFor={id.agree} className="bottom-bar-consent-label">
               <b>[필수]</b> 개인정보 수집 및 이용 동의 · 개인정보 제3자 제공 동의
             </label>
             <button type="button" className="bottom-bar-detail" onClick={() => setShowModal(true)}>
@@ -151,31 +184,155 @@ export default function BottomForm() {
             </button>
           </div>
 
-          <div className="bottom-bar-fields">
-            <label htmlFor="bottom-bar-phone" className="sr-only">
-              휴대폰 번호
-            </label>
-            <input
-              id="bottom-bar-phone"
-              name="mobile2"
-              type="tel"
-              inputMode="numeric"
-              autoComplete="tel-national"
-              value={phone}
-              onChange={(e) => {
-                setPhone(e.target.value.replace(/\D/g, ''))
-                if (status !== 'idle') {
-                  setStatus('idle')
-                  setMessage('')
-                }
-              }}
-              maxLength={11}
-              placeholder="휴대폰 번호 ( - 없이 숫자만 )"
-              className="bottom-bar-phone"
-            />
-            <button type="submit" className="bottom-bar-submit" disabled={status === 'sending'}>
-              {status === 'sending' ? '전송 중...' : '무료 상담'}
-            </button>
+          <div className="bottom-bar-grid">
+            {/* 성함 */}
+            <div className="bottom-bar-cell">
+              <label htmlFor={id.name} className="bottom-bar-label">
+                성함
+              </label>
+              <input
+                id={id.name}
+                name="customer_name"
+                type="text"
+                autoComplete="name"
+                maxLength={8}
+                value={form.customer_name}
+                onChange={(e) => set('customer_name', e.target.value)}
+                placeholder="성함 입력"
+                className="bottom-bar-input"
+              />
+            </div>
+
+            {/* 생년월일 */}
+            <div className="bottom-bar-cell">
+              <label htmlFor={id.birth} className="bottom-bar-label">
+                생년월일
+              </label>
+              <input
+                id={id.birth}
+                name="customer_birth"
+                type="text"
+                inputMode="numeric"
+                autoComplete="bday"
+                maxLength={6}
+                value={form.customer_birth}
+                onChange={(e) => set('customer_birth', e.target.value.replace(/\D/g, ''))}
+                placeholder="예) 950815"
+                className="bottom-bar-input"
+              />
+            </div>
+
+            {/* 성별 */}
+            <div className="bottom-bar-cell" role="group" aria-labelledby={id.sexLabel}>
+              <span className="bottom-bar-label" id={id.sexLabel}>
+                성별
+              </span>
+              <div className="bottom-bar-seg">
+                {SEX_OPTIONS.map(({ label, value }) => (
+                  <span key={value} className="bottom-bar-seg-item">
+                    <input
+                      className="sr-only"
+                      type="radio"
+                      id={`${id.sex}-${value}`}
+                      name="bottom_bar_customer_sex"
+                      value={value}
+                      checked={form.customer_sex === value}
+                      onChange={() => set('customer_sex', value)}
+                    />
+                    <label htmlFor={`${id.sex}-${value}`}>{label}</label>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 미용사(네일) 자격증 보유 여부 */}
+            <div className="bottom-bar-cell" role="group" aria-labelledby={id.licenseLabel}>
+              <span className="bottom-bar-label" id={id.licenseLabel}>
+                자격증 보유
+              </span>
+              <div className="bottom-bar-seg">
+                {LICENSE_OPTIONS.map(({ label, value }) => (
+                  <span key={value} className="bottom-bar-seg-item">
+                    <input
+                      className="sr-only"
+                      type="radio"
+                      id={`${id.license}-${value}`}
+                      name="bottom_bar_has_license"
+                      value={value}
+                      checked={form.has_license === value}
+                      onChange={() => set('has_license', value)}
+                    />
+                    <label htmlFor={`${id.license}-${value}`}>{label}</label>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 연락처 (국번 + 번호) */}
+            <div className="bottom-bar-cell bottom-bar-cell-phone">
+              <label htmlFor={id.mobile2} className="bottom-bar-label">
+                연락처
+              </label>
+              <div className="bottom-bar-phone-row">
+                <select
+                  id={id.mobile1}
+                  name="mobile1"
+                  aria-label="휴대폰 국번"
+                  value={form.mobile1}
+                  onChange={(e) => set('mobile1', e.target.value)}
+                  className="bottom-bar-input bottom-bar-select bottom-bar-prefix"
+                >
+                  {MOBILE_PREFIXES.map((v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  id={id.mobile2}
+                  name="mobile2"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  maxLength={11}
+                  value={form.mobile2}
+                  onChange={(e) => set('mobile2', e.target.value.replace(/\D/g, ''))}
+                  placeholder="- 없이 숫자만 입력"
+                  className="bottom-bar-input"
+                />
+              </div>
+            </div>
+
+            {/* 희망 지역 */}
+            <div className="bottom-bar-cell">
+              <label htmlFor={id.region} className="bottom-bar-label">
+                희망 지역
+              </label>
+              <select
+                id={id.region}
+                name="region"
+                value={form.region}
+                onChange={(e) => set('region', e.target.value)}
+                className="bottom-bar-input bottom-bar-select"
+                data-empty={form.region ? undefined : 'true'}
+              >
+                <option value="" disabled hidden>
+                  지역 선택
+                </option>
+                {REGIONS.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 제출 */}
+            <div className="bottom-bar-cell bottom-bar-cell-submit">
+              <button type="submit" className="bottom-bar-submit" disabled={status === 'sending'}>
+                {status === 'sending' ? '전송 중...' : '무료 상담 신청'}
+              </button>
+            </div>
           </div>
 
           <p className="bottom-bar-status" aria-live="polite" data-state={status}>
