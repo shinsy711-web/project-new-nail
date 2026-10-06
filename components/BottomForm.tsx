@@ -142,8 +142,10 @@ export default function BottomForm() {
       return
     }
     if (!agreed) {
+      // 동의 체크 줄을 숨겼으므로 미동의 상태면 본문 폼과 같이 동의 모달을 바로 띄운다. 확인하면 onConfirm 이 이어서 전송한다.
       setStatus('error')
       setMessage('개인정보 수집 및 이용, 제3자 제공에 동의해 주세요.')
+      setShowModal(true)
       return
     }
     void send()
@@ -168,23 +170,7 @@ export default function BottomForm() {
           noValidate
           aria-label="네일학원 무료 상담 신청"
         >
-          <div className="bottom-bar-consent">
-            {/* 체크 자체는 PrivacyModal 에서 두 항목(개인정보 수집·이용 / 제3자 제공)에
-                모두 동의해야만 켜진다. 여기서 직접 체크를 끄고 켜는 대신 클릭 시
-                기존 모달을 그대로 띄운다 — 동의를 받는 판정 로직(agreed 게이트,
-                validateForm, handleConfirm)은 그대로다. */}
-            <input
-              id={id.agree}
-              type="checkbox"
-              checked={agreed}
-              onChange={() => setShowModal(true)}
-              className="bottom-bar-check"
-            />
-            <label htmlFor={id.agree} className="bottom-bar-consent-label">
-              <b>[필수]</b> 개인정보 동의
-            </label>
-          </div>
-
+          {/* 동의 체크 줄은 숨겼다. 상담 신청을 누르면 동의 모달(두 항목 모두 동의해야 확인됨)이 뜬다. */}
           <div className="bottom-bar-grid">
             {/* 성함 */}
             <div className="bottom-bar-cell">

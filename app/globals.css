@@ -154,38 +154,6 @@ body {
   min-width: 0;
 }
 
-/* ── 동의 ──
-   문장을 바에 풀어놓지 않는다: 체크박스 + 짧은 라벨 한 줄만 보이고,
-   클릭하면 기존 PrivacyModal 이 그대로 뜬다(상세 문구는 모달 안에만 있음). */
-.bottom-bar-consent {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.bottom-bar-check {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  accent-color: var(--primary);
-  cursor: pointer;
-  margin: 0;
-}
-
-.bottom-bar-consent-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  cursor: pointer;
-  min-width: 0;
-}
-.bottom-bar-consent-label b {
-  color: var(--primary);
-  font-weight: 800;
-}
-
 /* ── 입력칸 격자 ──
    모바일(기본) : 2열. 연락처만 한 줄 전체.
      1행 성함 | 생년월일 / 2행 성별 | 자격증 / 3행 연락처 / 4행 지역 | 제출
@@ -355,9 +323,6 @@ body {
   .bottom-bar {
     padding: 10px 1.25rem;
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-  }
-  .bottom-bar-consent-label {
-    font-size: 13px;
   }
   .bottom-bar-grid {
     display: flex;
