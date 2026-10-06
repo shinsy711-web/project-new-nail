@@ -4,6 +4,7 @@ import { Geist } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import BottomForm from '@/components/BottomForm'
 import { CLUSTERS } from '@/data'
 import {
   HOME_DESC,
@@ -197,6 +198,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         {children}
         <Footer />
+        {/* 모든 페이지 하단 고정 상담 바 (모바일·PC 공통) */}
+        <BottomForm />
       </body>
     </html>
   )

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Breadcrumbs, PageHeader, Sections } from '@/components/Article'
 import { CLUSTERS, TOTAL_PAGE_COUNT } from '@/data'
-import { OG_IMAGE, OPERATOR, SITE_NAME, SITE_URL, ogImages } from '@/lib/site'
+import { OG_IMAGE, OPERATOR, SITE_NAME, SITE_URL, THIRD_PARTY_RECIPIENT, ogImages } from '@/lib/site'
 import type { Section } from '@/lib/types'
 
 export const metadata: Metadata = {
@@ -53,8 +53,8 @@ const SECTIONS: Section[] = [
     h2: '수익 구조를 밝힙니다',
     p: [
       '이 사이트는 무료로 운영되며, 두 가지 방식으로 비용을 충당합니다.',
-      '**첫째는 상담 연결입니다.** 방문자가 상담을 신청하면 동의를 받아 올댓뷰티 상담사에게 정보를 전달하고, 그 과정에서 수익이 발생합니다. 그래서 상담 신청 전에 개인정보 수집·이용 동의와 제3자 제공 동의 절차를 반드시 거칩니다.',
-      '여기서 분명히 밝혀 둘 것이 있습니다. **제공받는 곳은 올댓뷰티 상담사입니다.** 어떤 정보가 전달되는지는 동의 화면에서 확인하실 수 있습니다.',
+      `**첫째는 상담 연결입니다.** 방문자가 상담을 신청하면 동의를 받아 ${THIRD_PARTY_RECIPIENT}에게 정보를 전달하고, 그 과정에서 수익이 발생합니다. 그래서 상담 신청 전에 개인정보 수집·이용 동의와 제3자 제공 동의 절차를 반드시 거칩니다.`,
+      `여기서 분명히 밝혀 둘 것이 있습니다. **제공받는 곳은 ${THIRD_PARTY_RECIPIENT}입니다.** 어떤 정보가 전달되는지는 동의 화면에서 확인하실 수 있습니다.`,
       '**둘째는 광고입니다.** 페이지에 광고가 노출될 수 있으며, 광고 게재 여부가 본문 내용에 영향을 주지 않습니다.',
       '이 구조 때문에 특정 학원을 추천하는 형식을 취하지 않습니다. 대신 비교 기준을 제공하고, 최종 판단은 이용자가 직접 하시도록 구성했습니다.',
     ],

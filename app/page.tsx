@@ -2,7 +2,7 @@ import Link from 'next/link'
 import FormSection from '@/components/FormSection'
 import { CLUSTERS, TOP_PAGES, TOTAL_PAGE_COUNT } from '@/data'
 import { DataTable, Eyebrow, FaqBlock, FaqJsonLd, Sections } from '@/components/Article'
-import { HOME_H1, SITE_URL } from '@/lib/site'
+import { HOME_H1, SITE_URL, THIRD_PARTY_RECIPIENT } from '@/lib/site'
 import type { Faq, Section } from '@/lib/types'
 
 const HOME_FAQS: Faq[] = [
@@ -179,7 +179,7 @@ export default function HomePage() {
           >
             신청 시 개인정보 수집·이용 및 제3자 제공 동의 절차가 진행됩니다.
             <br />
-            제공받는 곳은 올댓뷰티 상담사입니다.
+            제공받는 곳은 {THIRD_PARTY_RECIPIENT}입니다.
           </p>
 
           <p style={{ marginTop: 14, fontSize: 13.5 }}>

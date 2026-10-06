@@ -33,6 +33,13 @@ export const OPERATOR = {
   email: 'shinsy711@gmail.com',
 }
 
+/**
+ * 개인정보 제3자 제공받는 자 — 사이트 전체 단일 소스.
+ * 동의 모달(PrivacyModal), 개인정보처리방침 제6조, 필수안내사항, 폼 옆 안내 문구,
+ * 하단 고정 상담바가 모두 이 값을 참조한다. 바꿀 일이 생기면 이 상수만 수정하면 된다.
+ */
+export const THIRD_PARTY_RECIPIENT = '올댓뷰티 상담사'
+
 /** 페이지 metadata 의 openGraph.images 에 그대로 넣는 값. 페이지별로 openGraph를 정의하면
  *  루트 값이 상속되지 않고 통째로 덮이므로, 각 페이지에서 이 헬퍼를 써야 og:image가 유지된다. */
 export function ogImages(alt = '네일학원 수강료·국비지원·자격증 총정리') {

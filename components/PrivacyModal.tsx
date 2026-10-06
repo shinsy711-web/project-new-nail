@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { THIRD_PARTY_RECIPIENT } from "@/lib/site"
 
 type Props = {
   onConfirm: () => void
@@ -77,7 +78,7 @@ export default function PrivacyModal({ onConfirm, onClose }: Props) {
               </ContentBox>
 
               <ContentBox checked={thirdAgree} onChange={setThirdAgree} label="개인정보 제3자 제공 동의" primary={primary}>
-                제공받는 자 : <b>올댓뷰티 상담사</b><br />
+                제공받는 자 : <b>{THIRD_PARTY_RECIPIENT}</b><br />
                 제공 목적 : 네일학원 수강료·과정 안내 및 1:1 유선 상담 진행<br />
                 제공 항목 : 성명, 휴대폰 번호, 생년월일, 성별, 희망 지역, 미용사(네일) 자격증 보유 여부<br />
                 보유 기간 : 상담 목적 달성 시 즉시 파기 (최대 수집일로부터 1년)<br />
@@ -89,7 +90,7 @@ export default function PrivacyModal({ onConfirm, onClose }: Props) {
               <p>• 입력하신 정보는 상담 응대를 위한 필수 항목이며, 동의를 거부하실 경우 상담이 제한될 수 있습니다.</p>
               <p>• 수집된 정보는 상담 목적 외 다른 용도로 사용되지 않습니다.</p>
               <p>• 정보 주체는 언제든지 동의를 철회할 수 있으며, 이 경우 수집된 개인정보는 지체 없이 파기됩니다.</p>
-              <p>• 제3자 제공은 올댓뷰티 상담사를 대상으로 합니다.</p>
+              <p>• 제3자 제공은 {THIRD_PARTY_RECIPIENT}를 대상으로 합니다.</p>
             </div>
           </div>
 

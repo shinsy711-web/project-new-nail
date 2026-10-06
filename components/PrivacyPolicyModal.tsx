@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { THIRD_PARTY_RECIPIENT } from "@/lib/site"
 
 export default function PrivacyPolicyModal() {
   const [open, setOpen] = useState(false)
@@ -71,7 +72,7 @@ export default function PrivacyPolicyModal() {
               <Section title="제6조 (개인정보의 제3자 제공)">
                 회사는 이용자의 동의 없이 개인정보를 제3자에게 제공하지 않으며, 이용자가 상담 신청 시
                 별도로 동의한 범위 내에서만 제공합니다.<br /><br />
-                <b>제공받는 자:</b> 올댓뷰티 상담사<br />
+                <b>제공받는 자:</b> {THIRD_PARTY_RECIPIENT}<br />
                 <b>제공 목적:</b> 네일학원 수강료·과정 안내, 국비지원 가능 여부 확인,
                 1:1 유선 상담 진행<br />
                 <b>제공 항목:</b> 성명, 휴대폰 번호, 생년월일, 성별, 희망 지역, 미용사(네일) 자격증 보유 여부<br />

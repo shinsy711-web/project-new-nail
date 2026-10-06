@@ -118,3 +118,178 @@ h1, h2, h3, h4 { letter-spacing: -0.025em; }
 .skip-link:focus {
   left: 0;
 }
+
+/* ──────────────────────────────────────────────
+   하단 고정 상담 바 (components/BottomForm.tsx)
+   색·폰트·버튼 모양은 기존 폼(FormSection)과 동일한 토큰을 쓴다.
+   z-index 60 : Header(sticky 50) 위, 스킵링크(100)·동의 모달(999)·
+   처리방침/필수안내 모달(9999) 아래 — 모달을 덮지 않는다.
+   ────────────────────────────────────────────── */
+
+/* 하이드레이션 전 기본 여백. 마운트 후에는 BottomForm 이 실제 바 높이로 덮어쓴다. */
+body {
+  padding-bottom: 124px;
+}
+
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -6px 24px rgba(31, 23, 32, 0.1);
+  padding: 10px 1rem;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+}
+
+.bottom-bar-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bottom-bar-consent {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  min-width: 0;
+}
+
+.bottom-bar-check {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+  margin: 0;
+}
+
+.bottom-bar-consent-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  cursor: pointer;
+  min-width: 0;
+}
+.bottom-bar-consent-label b {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.bottom-bar-detail {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.bottom-bar-fields {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.bottom-bar-phone {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 14px;
+  padding: 11px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.bottom-bar-phone::placeholder {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.bottom-bar-phone:focus {
+  border-color: var(--primary);
+  box-shadow: 0 4px 20px rgba(214, 51, 108, 0.12);
+}
+
+.bottom-bar-submit {
+  flex: 0 0 auto;
+  width: 108px;
+  padding: 11px 10px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 900;
+  font-family: inherit;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(214, 51, 108, 0.24);
+  transition: opacity 0.2s ease;
+}
+.bottom-bar-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bottom-bar-status {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.bottom-bar-status:empty {
+  display: none;
+}
+.bottom-bar-status[data-state='done'] {
+  color: var(--success);
+}
+.bottom-bar-status[data-state='error'] {
+  color: var(--primary);
+}
+
+/* PC: 한 줄 배치 + 가운데 정렬(최대 1180px) */
+@media (min-width: 880px) {
+  body {
+    padding-bottom: 76px;
+  }
+  .bottom-bar {
+    padding: 12px 1.25rem;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+  .bottom-bar-inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+  }
+  .bottom-bar-consent {
+    flex: 1 1 auto;
+  }
+  .bottom-bar-consent-label {
+    font-size: 13px;
+  }
+  .bottom-bar-fields {
+    flex: 0 0 auto;
+    width: 400px;
+  }
+  .bottom-bar-status {
+    flex: 1 1 100%;
+    text-align: right;
+  }
+}

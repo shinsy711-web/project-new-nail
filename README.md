@@ -66,20 +66,31 @@ components/Article.tsx           Sections/DataTable/Callout/FaqBlock/RelatedLink
 - 이탈 방지 모달("정말 나가시겠습니까?") 포함
 - 푸터에 `PrivacyPolicyModal`(개인정보처리방침 11개조) · `LegalNoticeModal`(필수안내사항)
 
+### 하단 고정 상담 바 — `components/BottomForm.tsx`
+
+- `app/layout.tsx`에서 `<Footer />` 뒤에 전역 마운트 → **모든 페이지·모바일·PC 공통 노출**
+- 구성: 휴대폰 번호 + 필수 동의 체크박스(수집·이용 / 제3자 제공, 상세는 `PrivacyModal` 재사용) + 전송 버튼
+- 전송 경로는 `FormSection`과 완전히 동일(같은 엔드포인트·필드명·환경변수). 번호 외 항목은 빈 값, `category`만 `네일`
+- 스타일은 `app/globals.css`의 `.bottom-bar*` 규칙. z-index 60 (Header 50 위 / 모달 999·9999 아래)
+- 바 높이만큼 `body { padding-bottom }`을 주고, 마운트 후 실제 높이로 다시 맞춥니다(ResizeObserver)
+
 ### 제3자 제공 고지 — 올댓뷰티 상담사
 
 제공받는 자는 **올댓뷰티 상담사**로 고지합니다. (2026-09-13 사용자 지시로 변경 — 이전에는 "복수 제휴 상담처" 유형으로 고지했다.)
 
-이 문구가 들어간 곳 (하나만 고치면 어긋나므로 6곳을 함께 유지):
+값은 **`lib/site.ts`의 `THIRD_PARTY_RECIPIENT` 상수 한 곳**에서만 관리합니다.
+표기를 바꿀 일이 생기면 이 상수만 수정하면 아래 화면에 모두 반영됩니다.
 
 | 위치 | 파일 |
 |---|---|
-| 상담 신청 동의 모달 (제3자 제공 동의) | `components/PrivacyModal.tsx` |
-| 동의 모달 하단 유의사항 | `components/PrivacyModal.tsx` |
-| 개인정보처리방침 제5조(위탁)·제6조(제3자 제공) | `components/PrivacyPolicyModal.tsx` |
+| 단일 소스 상수 | `lib/site.ts` (`THIRD_PARTY_RECIPIENT`) |
+| 상담 신청 동의 모달 (제3자 제공 동의) · 하단 유의사항 | `components/PrivacyModal.tsx` |
+| 개인정보처리방침 제6조(제3자 제공) | `components/PrivacyPolicyModal.tsx` |
 | 필수안내사항 | `components/LegalNoticeModal.tsx` |
 | 사이트 소개 — 수익 구조 | `app/about/page.tsx` |
 | 문의하기 안내 · 홈 히어로 하단 | `app/contact/page.tsx` · `app/page.tsx` |
+
+> 처리방침 **제5조는 위탁(수탁자)** 조항이라 제3자 제공과 범주가 달라 그대로 둡니다.
 
 > **project23 원본에서 바로잡은 것:** 처리방침 제5조의 수탁자가 `주식회사 와야미디어`로
 > 적혀 있었습니다. 와야미디어는 개인정보처리자(회사) 본인이라 스스로를 수탁자로 둘 수 없어,

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import FormSection from '@/components/FormSection'
 import { Breadcrumbs, PageHeader } from '@/components/Article'
-import { OG_IMAGE, OPERATOR, SITE_NAME, SITE_URL, ogImages } from '@/lib/site'
+import { OG_IMAGE, OPERATOR, SITE_NAME, SITE_URL, THIRD_PARTY_RECIPIENT, ogImages } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: '문의하기 | 상담 신청·정보 수정 요청·제휴 문의',
@@ -53,7 +53,7 @@ export default function ContactPage() {
           목표(자격증·취업·창업·취미), 희망 지역, 가능한 시간대를 기준으로 조건에 맞는 과정과
           국비지원 가능 여부를 정리해 안내해 드립니다. 신청 시 개인정보 수집·이용 동의와
           제3자 제공 동의 절차가 진행되며, 동의 화면에서 어떤 항목이 어디에 전달되는지
-          확인하실 수 있습니다. 제공받는 곳은 올댓뷰티 상담사입니다.
+          확인하실 수 있습니다. 제공받는 곳은 {THIRD_PARTY_RECIPIENT}입니다.
         </p>
         <FormSection
           heading="무료 상담 신청"
