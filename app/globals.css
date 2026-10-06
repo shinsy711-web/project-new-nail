@@ -129,7 +129,7 @@ h1, h2, h3, h4 { letter-spacing: -0.025em; }
 
 /* 하이드레이션 전 기본 여백(대략값). 마운트 후에는 BottomForm 이 실측 높이로 덮어쓴다. */
 body {
-  padding-bottom: 316px;
+  padding-bottom: 232px;
 }
 
 .bottom-bar {
@@ -141,8 +141,8 @@ body {
   background: var(--bg-card);
   border-top: 1px solid var(--border-color);
   box-shadow: 0 -6px 24px rgba(31, 23, 32, 0.1);
-  padding: 10px 1rem;
-  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  padding: 8px 1rem;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
 }
 
 .bottom-bar-inner {
@@ -150,22 +150,23 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
 }
 
-/* ── 동의 ── */
+/* ── 동의 ──
+   문장을 바에 풀어놓지 않는다: 체크박스 + 짧은 라벨 한 줄만 보이고,
+   클릭하면 기존 PrivacyModal 이 그대로 뜬다(상세 문구는 모달 안에만 있음). */
 .bottom-bar-consent {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 8px;
+  gap: 6px;
   min-width: 0;
 }
 
 .bottom-bar-check {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   accent-color: var(--primary);
   cursor: pointer;
@@ -176,7 +177,7 @@ body {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.4;
   cursor: pointer;
   min-width: 0;
 }
@@ -185,35 +186,22 @@ body {
   font-weight: 800;
 }
 
-.bottom-bar-detail {
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: 12px;
-  font-weight: 700;
-  font-family: inherit;
-  color: var(--primary);
-  text-decoration: underline;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
 /* ── 입력칸 격자 ──
    모바일(기본) : 2열. 연락처만 한 줄 전체.
      1행 성함 | 생년월일 / 2행 성별 | 자격증 / 3행 연락처 / 4행 지역 | 제출
-   PC(≥880px)  : 7열 한 줄로 펴서 바 높이를 줄인다. */
+   PC(≥880px)  : 한 줄 가로 flex, 넘치면 flex-wrap 으로 다음 줄에 펼친다.
+   필드 라벨은 화면에 보이지 않고(sr-only) placeholder·pill 글자로 바로 알아보게 한다. */
 .bottom-bar-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 10px;
-  align-items: end;
+  gap: 6px 8px;
+  align-items: center;
   min-width: 0;
 }
 
 .bottom-bar-cell {
   display: flex;
   flex-direction: column;
-  gap: 3px;
   min-width: 0;
 }
 
@@ -222,30 +210,32 @@ body {
 }
 
 .bottom-bar-cell-submit {
-  justify-content: flex-end;
+  justify-content: center;
 }
 
-.bottom-bar-label {
-  display: block;
+/* 성별·자격증 칸 안에서 짧은 태그 + 알약 버튼을 한 줄에 */
+.bottom-bar-seg-cell {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.bottom-bar-seg-tag {
+  flex-shrink: 0;
   font-size: 11px;
   font-weight: 800;
-  color: var(--primary);
-  letter-spacing: 0.02em;
-  line-height: 1.3;
-  padding-left: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
 }
 
 .bottom-bar-input {
   width: 100%;
   min-width: 0;
-  height: 38px;
-  padding: 0 10px;
+  height: 36px;
+  padding: 0 14px;
   background: var(--bg-card);
-  border: 1.5px solid var(--border-color);
-  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
   font-size: 16px;
   font-weight: 500;
   font-family: inherit;
@@ -259,12 +249,12 @@ body {
 }
 .bottom-bar-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 4px 20px rgba(214, 51, 108, 0.12);
+  box-shadow: 0 4px 16px rgba(214, 51, 108, 0.12);
 }
 
 .bottom-bar-select {
   cursor: pointer;
-  padding-right: 4px;
+  padding-right: 8px;
 }
 .bottom-bar-select[data-empty='true'] {
   color: var(--text-muted);
@@ -276,15 +266,17 @@ body {
   min-width: 0;
 }
 .bottom-bar-prefix {
-  flex: 0 0 74px;
-  width: 74px;
+  flex: 0 0 72px;
+  width: 72px;
+  padding: 0 8px;
 }
 
-/* ── 성별 · 자격증 보유 (라디오 2지선다) ── */
+/* ── 성별 · 자격증 보유 (라디오 2지선다, 알약 버튼) ── */
 .bottom-bar-seg {
   display: flex;
   gap: 4px;
   min-width: 0;
+  flex: 1 1 auto;
 }
 .bottom-bar-seg-item {
   display: flex;
@@ -293,14 +285,14 @@ body {
 }
 .bottom-bar-seg label {
   flex: 1 1 auto;
-  min-width: 42px;
-  height: 38px;
+  min-width: 40px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid var(--border-color);
-  border-radius: 12px;
-  background: var(--accent-light);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-card);
   color: var(--text-muted);
   font-size: 13px;
   font-weight: 800;
@@ -317,12 +309,12 @@ body {
 .bottom-bar-submit {
   width: 100%;
   min-width: 0;
-  height: 38px;
+  height: 40px;
   padding: 0 8px;
   background: var(--primary);
   color: #fff;
   border: none;
-  border-radius: 12px;
+  border-radius: 999px;
   font-size: 15px;
   font-weight: 900;
   font-family: inherit;
@@ -341,7 +333,7 @@ body {
 .bottom-bar-status {
   font-size: 12px;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 1.4;
   color: var(--text-muted);
 }
 .bottom-bar-status:empty {
@@ -354,10 +346,11 @@ body {
   color: var(--primary);
 }
 
-/* PC: 모든 입력칸을 가로 한 줄로 (최대 1180px 가운데 정렬) */
+/* PC: 알약 입력칸들을 가로 한 줄로, 맨 끝에 큼직한 CTA.
+   넘치면(좁은 창) flex-wrap 으로 다음 줄에 펼친다. 최대 1180px 가운데 정렬. */
 @media (min-width: 880px) {
   body {
-    padding-bottom: 106px;
+    padding-bottom: 86px;
   }
   .bottom-bar {
     padding: 10px 1.25rem;
@@ -366,21 +359,38 @@ body {
   .bottom-bar-consent-label {
     font-size: 13px;
   }
-  .bottom-bar-detail {
-    font-size: 13px;
-  }
   .bottom-bar-grid {
-    grid-template-columns:
-      minmax(0, 1.15fr)  /* 성함 */
-      minmax(0, 1.15fr)  /* 생년월일 */
-      auto               /* 성별 */
-      auto               /* 자격증 보유 */
-      minmax(0, 2fr)     /* 연락처 */
-      minmax(0, 1.1fr)   /* 희망 지역 */
-      minmax(0, 1.5fr);  /* 제출 */
-    gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .bottom-bar-cell {
+    flex: 1 1 130px;
   }
   .bottom-bar-cell-phone {
     grid-column: auto;
+    flex: 1.6 1 220px;
+  }
+  .bottom-bar-seg-cell {
+    flex: 0 1 auto;
+  }
+  .bottom-bar-input {
+    height: 40px;
+  }
+  .bottom-bar-seg label {
+    height: 40px;
+    min-width: 48px;
+    padding: 0 6px;
+  }
+  .bottom-bar-prefix {
+    flex: 0 0 76px;
+    width: 76px;
+  }
+  .bottom-bar-cell-submit {
+    flex: 1.3 1 160px;
+  }
+  .bottom-bar-submit {
+    height: 40px;
   }
 }

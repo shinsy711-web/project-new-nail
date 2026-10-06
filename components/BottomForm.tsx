@@ -169,25 +169,26 @@ export default function BottomForm() {
           aria-label="네일학원 무료 상담 신청"
         >
           <div className="bottom-bar-consent">
+            {/* 체크 자체는 PrivacyModal 에서 두 항목(개인정보 수집·이용 / 제3자 제공)에
+                모두 동의해야만 켜진다. 여기서 직접 체크를 끄고 켜는 대신 클릭 시
+                기존 모달을 그대로 띄운다 — 동의를 받는 판정 로직(agreed 게이트,
+                validateForm, handleConfirm)은 그대로다. */}
             <input
               id={id.agree}
               type="checkbox"
               checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
+              onChange={() => setShowModal(true)}
               className="bottom-bar-check"
             />
             <label htmlFor={id.agree} className="bottom-bar-consent-label">
-              <b>[필수]</b> 개인정보 수집 및 이용 동의 · 개인정보 제3자 제공 동의
+              <b>[필수]</b> 개인정보 동의
             </label>
-            <button type="button" className="bottom-bar-detail" onClick={() => setShowModal(true)}>
-              상세보기
-            </button>
           </div>
 
           <div className="bottom-bar-grid">
             {/* 성함 */}
             <div className="bottom-bar-cell">
-              <label htmlFor={id.name} className="bottom-bar-label">
+              <label htmlFor={id.name} className="sr-only">
                 성함
               </label>
               <input
@@ -198,14 +199,14 @@ export default function BottomForm() {
                 maxLength={8}
                 value={form.customer_name}
                 onChange={(e) => set('customer_name', e.target.value)}
-                placeholder="성함 입력"
+                placeholder="예) 홍길동"
                 className="bottom-bar-input"
               />
             </div>
 
             {/* 생년월일 */}
             <div className="bottom-bar-cell">
-              <label htmlFor={id.birth} className="bottom-bar-label">
+              <label htmlFor={id.birth} className="sr-only">
                 생년월일
               </label>
               <input
@@ -223,8 +224,8 @@ export default function BottomForm() {
             </div>
 
             {/* 성별 */}
-            <div className="bottom-bar-cell" role="group" aria-labelledby={id.sexLabel}>
-              <span className="bottom-bar-label" id={id.sexLabel}>
+            <div className="bottom-bar-cell bottom-bar-seg-cell" role="group" aria-labelledby={id.sexLabel}>
+              <span className="bottom-bar-seg-tag" id={id.sexLabel}>
                 성별
               </span>
               <div className="bottom-bar-seg">
@@ -246,9 +247,9 @@ export default function BottomForm() {
             </div>
 
             {/* 미용사(네일) 자격증 보유 여부 */}
-            <div className="bottom-bar-cell" role="group" aria-labelledby={id.licenseLabel}>
-              <span className="bottom-bar-label" id={id.licenseLabel}>
-                자격증 보유
+            <div className="bottom-bar-cell bottom-bar-seg-cell" role="group" aria-labelledby={id.licenseLabel}>
+              <span className="bottom-bar-seg-tag" id={id.licenseLabel}>
+                자격증
               </span>
               <div className="bottom-bar-seg">
                 {LICENSE_OPTIONS.map(({ label, value }) => (
@@ -270,7 +271,7 @@ export default function BottomForm() {
 
             {/* 연락처 (국번 + 번호) */}
             <div className="bottom-bar-cell bottom-bar-cell-phone">
-              <label htmlFor={id.mobile2} className="bottom-bar-label">
+              <label htmlFor={id.mobile2} className="sr-only">
                 연락처
               </label>
               <div className="bottom-bar-phone-row">
@@ -305,7 +306,7 @@ export default function BottomForm() {
 
             {/* 희망 지역 */}
             <div className="bottom-bar-cell">
-              <label htmlFor={id.region} className="bottom-bar-label">
+              <label htmlFor={id.region} className="sr-only">
                 희망 지역
               </label>
               <select
