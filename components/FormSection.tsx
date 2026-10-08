@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react"
 import PrivacyModal from "./PrivacyModal"
-import { validateForm, parsePhone } from "@/lib/validate"
+import { validateForm, parsePhone, cleanMobile2 } from "@/lib/validate"
 import {
   INITIAL_FORM,
   LICENSE_OPTIONS,
@@ -267,10 +267,9 @@ export default function FormSection({ heading, sub, onDark = false }: Props) {
                     autoComplete="tel-national"
                     required
                     value={form.mobile2}
-                    onChange={(e) => set("mobile2", e.target.value.replace(/\D/g, ""))}
+                    onChange={(e) => set("mobile2", cleanMobile2(e.target.value))}
                     onFocus={() => setFocusedField('mobile2')}
                     onBlur={() => setFocusedField(null)}
-                    maxLength={11}
                     placeholder="- 없이 숫자만 입력"
                     style={inputStyle}
                   />
