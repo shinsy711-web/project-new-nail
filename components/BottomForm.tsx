@@ -29,6 +29,9 @@ type Status = 'idle' | 'sending' | 'done' | 'error'
  *  - 동의 항목·문구는 기존 바텀폼 그대로이며, 상세 내용은 기존 PrivacyModal 을
  *    띄워 보여주고 모달에서 동의하면 그대로 전송된다.
  */
+/** 이 거리(px) 이상 스크롤해야 바텀폼이 올라온다 */
+const SHOW_AFTER = 300
+
 export default function BottomForm() {
   const uid = useId()
   const id = {
@@ -50,6 +53,7 @@ export default function BottomForm() {
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
   const barRef = useRef<HTMLDivElement | null>(null)
+  const [shown, setShown] = useState(false)
 
   const set = (key: keyof LeadForm, value: string) => {
     setForm((p) => ({ ...p, [key]: value }))
@@ -68,7 +72,8 @@ export default function BottomForm() {
 
     const apply = () => {
       // 소수점 높이(예: 315.4px)가 내림되어 푸터 마지막 1px 이 가려지지 않도록 올림한다.
-      document.body.style.paddingBottom = `${Math.ceil(bar.getBoundingClientRect().height)}px`
+      // 모바일 카드는 바닥에서 8px 띄우므로 그만큼 여유를 더 준다.
+      document.body.style.paddingBottom = `${Math.ceil(bar.getBoundingClientRect().height) + 16}px`
     }
     apply()
 
@@ -80,6 +85,32 @@ export default function BottomForm() {
       observer.disconnect()
       window.removeEventListener('resize', apply)
       document.body.style.paddingBottom = ''
+    }
+  }, [])
+
+  // 처음엔 화면 아래에 숨겨 두고, SHOW_AFTER(px) 이상 스크롤하면 올라온다. 맨 위로 돌아가면 다시 내려간다.
+  // 단, 한 번이라도 바 안에 입력을 시작했으면 계속 띄워 둔다(입력·동의 모달·전송 결과 확인 중 사라지지 않게).
+  // 스크롤할 거리가 SHOW_AFTER 보다 짧은 페이지는 처음부터 보여준다.
+  useEffect(() => {
+    const bar = barRef.current
+    if (!bar) return
+    let pinned = false
+    const update = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight
+      setShown(pinned || scrollable < SHOW_AFTER || window.scrollY > SHOW_AFTER)
+    }
+    const pin = () => {
+      pinned = true
+      update()
+    }
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    bar.addEventListener('focusin', pin)
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+      bar.removeEventListener('focusin', pin)
     }
   }, [])
 
@@ -163,7 +194,7 @@ export default function BottomForm() {
         />
       )}
 
-      <div className="bottom-bar" ref={barRef}>
+      <div className={`bottom-bar${shown ? ' is-shown' : ''}`} ref={barRef}>
         <form
           className="bottom-bar-inner"
           onSubmit={handleSubmit}
