@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import PrivacyModal from './PrivacyModal'
-import { parsePhone, validateForm, type ParsedPhone } from '@/lib/validate'
+import { parsePhone, validateForm, type ParsedPhone, cleanMobile2 } from '@/lib/validate'
 import {
   INITIAL_FORM,
   LICENSE_OPTIONS,
@@ -320,9 +320,8 @@ export default function BottomForm() {
                   type="tel"
                   inputMode="numeric"
                   autoComplete="tel-national"
-                  maxLength={11}
                   value={form.mobile2}
-                  onChange={(e) => set('mobile2', e.target.value.replace(/\D/g, ''))}
+                  onChange={(e) => set('mobile2', cleanMobile2(e.target.value))}
                   placeholder="- 없이 숫자만 입력"
                   className="bottom-bar-input"
                 />
