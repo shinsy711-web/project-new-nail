@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { createPortal } from "react-dom"
 import { DATA_COLLECTOR, THIRD_PARTY_RECIPIENT } from "@/lib/site"
 
 type Props = {
@@ -31,10 +32,11 @@ export default function PrivacyModal({ onConfirm, onClose }: Props) {
 
   const handleClose = () => setShowAlert(true)
 
-  return (
+  // 바텀폼(backdrop-filter)·폼 섹션 안에서 열려도 갇히지 않도록 body 로 띄운다.
+  return createPortal(
     <>
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-        <div style={{ background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, maxHeight: '85dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 60px rgba(0,0,0,0.2)' }}>
+        <div style={{ background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, maxHeight: '85dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 60px rgba(0,0,0,0.2)', position: 'relative' }}>
 
           {/* 헤더 */}
           <div style={{ padding: '32px 32px 20px', position: 'relative' }}>
@@ -130,7 +132,8 @@ export default function PrivacyModal({ onConfirm, onClose }: Props) {
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body
   )
 }
 
